@@ -30,6 +30,7 @@ class Car {
             name: this.name,
             turn,
           });
+          this.stop();
           return;
         }
 
@@ -104,3 +105,96 @@ Promise.all(carsRace).then((resultTable) => {
 //   cars.forEach((car) => car.stop());
 //   printResult(firstResult);
 // });
+
+const car10 = {
+  name: 'name',
+  maxSpeed: 5,
+  interval: null,
+
+  stop: () => {},
+  start: () => {},
+};
+
+class Format {
+  static string(value) {
+    return `string = ${value}`;
+  }
+  static number(value) {
+    return `number = ${value}`;
+  }
+}
+
+class Filter {
+  constructor() {
+    this.array = [];
+  }
+
+  add(value) {
+    this.array.push(value);
+  }
+
+  delete(value) {
+    this.array = this.array.filter((i) => i === value);
+  }
+
+  hasValue(value) {
+    return this.array.indexOf(value) !== -1;
+  }
+
+  isEmpty() {
+    return !this.array.length;
+  }
+
+  clear() {
+    this.array = [];
+  }
+
+  getFilter() {
+    return this.array;
+  }
+
+  setFilter(arr) {
+    this.array = arr;
+  }
+}
+
+class Filters {
+  constructor() {
+    this.fields = {
+      color: new Filter(),
+      size: new Filter(),
+    };
+  }
+
+  getFields() {
+    return Object.keys(this.fields);
+  }
+
+  isFilersEmpty() {
+    return this.getFields().some((key) => this.fields[key].isEmpty());
+  }
+
+  clearAllFilters() {
+    return this.getFields().forEach((key) => this.fields[key].clear());
+  }
+
+  getAllFiltersAsArray() {
+    return this.getFields().map((key) => this.fields[key].getFilter());
+  }
+}
+
+const filters = new Filters();
+
+filters.fields.color.add('blue');
+filters.fields.size.add(15);
+filters.fields.size.delete(12);
+
+filters.fields.color.hasValue('blue');
+
+if (filters.isFilersEmpty()) {
+  console.log('Фильтры не установлены');
+} else {
+  filters.clearAllFilters();
+}
+
+localStorage.setItem('filters', JSON.stringify(filters.getAllFiltersAsArray()));
